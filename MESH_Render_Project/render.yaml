@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: mesh-3d-orders
+    runtime: python
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    disk:
+      name: mesh-orders-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: ADMIN_CHAT_ID
+        sync: false
+      - key: PUBLIC_SITE_URL
+        sync: false
+      - key: DB_PATH
+        value: /var/data/mesh_orders.sqlite3

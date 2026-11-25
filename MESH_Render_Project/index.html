@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MESH — каталог 3D-моделей</title>
+<style>
+:root{--bg:#0e1116;--panel:#161b23;--line:#262d38;--tx:#e6e9ee;--mut:#8b95a5;--ac:#3dd6c6;--ac2:#f0a64a;--ac-tx:#06201d;--danger:#e5675b;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#f3f5f8;--panel:#fff;--line:#d9dee6;--tx:#161b23;--mut:#5d6877;--ac:#0b8f84;--ac2:#b8721a;--ac-tx:#fff}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.5}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+header{border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;height:64px}
+.logo{font-weight:800;letter-spacing:.18em;font-size:18px}.logo span{color:var(--ac)}
+nav{display:flex;gap:8px}
+button{font:inherit;cursor:pointer;border-radius:8px;border:1px solid var(--line);background:var(--panel);color:var(--tx);padding:9px 16px;transition:.15s}
+button:hover{border-color:var(--ac)}
+.pri{background:var(--ac);color:var(--ac-tx);border-color:var(--ac);font-weight:600}
+.pri:hover{filter:brightness(1.1)}
+.danger:hover{border-color:var(--danger);color:var(--danger)}
+.hero{padding:64px 0 40px;display:grid;grid-template-columns:1.2fr .8fr;gap:32px;align-items:center;
+background:linear-gradient(var(--line) 1px,transparent 1px) 0 0/100% 40px,linear-gradient(90deg,var(--line) 1px,transparent 1px) 0 0/40px 100%;background-blend-mode:normal}
+.hero>div:first-child{background:var(--bg);padding:8px 0}
+.tag{color:var(--ac2);font-size:13px;letter-spacing:.14em;text-transform:uppercase}
+h1{font-size:clamp(30px,5vw,52px);line-height:1.1;margin:10px 0 16px}
+.hero p{color:var(--mut);max-width:480px;margin:0 0 24px}
+.hero svg{width:100%;max-width:300px;justify-self:center;color:var(--ac)}
+.cats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin:24px 0 8px}
+.cat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;text-align:left;display:block;width:100%}
+.cat b{display:block;font-size:20px}.cat small{color:var(--mut)}
+.cat .n{color:var(--ac);font-size:30px;font-weight:700;display:block}
+section{padding:40px 0}
+.bar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px}
+h2{margin:0;font-size:26px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tabs button.on{background:var(--ac);color:var(--ac-tx);border-color:var(--ac)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.card h3{margin:0;font-size:18px;word-break:break-word}
+.card p{margin:0;color:var(--mut);font-size:14px;flex:1;word-break:break-word}
+.meta{display:flex;gap:6px;flex-wrap:wrap;font-size:12px}
+.meta span{border:1px solid var(--line);border-radius:6px;padding:2px 8px;color:var(--mut)}
+.meta .c{color:var(--ac2);border-color:var(--ac2)}.meta .f{color:var(--ac);border-color:var(--ac)}
+.row{display:flex;gap:8px;flex-wrap:wrap}.row button{flex:1;padding:8px;min-width:0}.row button[data-order]{border-color:var(--ac);color:var(--ac)}
+.empty{border:1px dashed var(--line);border-radius:12px;padding:40px;text-align:center;color:var(--mut);grid-column:1/-1}
+footer{border-top:1px solid var(--line);color:var(--mut);padding:24px 0;font-size:14px}
+.modal{position:fixed;inset:0;background:rgba(5,8,12,.7);display:none;align-items:center;justify-content:center;padding:16px;z-index:20}
+.modal.open{display:flex}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:24px;width:100%;max-width:480px;max-height:92vh;overflow:auto}
+.box.big{max-width:760px}
+.box h3{margin:0 0 16px;font-size:22px}
+label{display:block;font-size:13px;color:var(--mut);margin:14px 0 6px}
+input,select,textarea{width:100%;font:inherit;background:var(--bg);color:var(--tx);border:1px solid var(--line);border-radius:8px;padding:10px}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--ac)}
+textarea{min-height:90px;resize:vertical}
+.acts{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
+.pick{display:grid;gap:10px}.pick button{padding:14px;text-align:left;font-size:16px}
+.thumb{width:100%;height:160px;object-fit:cover;border-radius:8px;background:var(--bg);border:1px solid var(--line);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--mut);font-weight:700;letter-spacing:.1em}.vimg{width:100%;max-height:380px;object-fit:contain;border-radius:10px;border:1px solid var(--line);background:var(--bg);margin-top:12px;display:none}
+canvas{width:100%;height:380px;display:block;border-radius:10px;background:var(--bg);border:1px solid var(--line);cursor:grab}
+.note{color:var(--mut);font-size:14px;margin:10px 0 0}
+.review-list{display:grid;gap:12px;margin-top:18px}.review{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px}.review p{margin:8px 0;color:var(--mut);white-space:pre-wrap}.review small{color:var(--mut)}
+.review-form{display:grid;grid-template-columns:1fr 1fr;gap:10px}.review-form .wide{grid-column:1/-1}
+@media(max-width:600px){.review-form{grid-template-columns:1fr}.review-form .wide{grid-column:auto}}
+.err{color:var(--danger);font-size:13px;margin-top:8px;min-height:18px}
+@media(max-width:760px){.hero{grid-template-columns:1fr}.hero svg{display:none}.cats{grid-template-columns:1fr}.logo{font-size:15px}header .wrap{height:auto;min-height:64px;flex-wrap:wrap;padding-top:10px;padding-bottom:10px}nav{flex-wrap:wrap}nav button{padding:7px 9px;font-size:13px}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div class="logo">ME<span>S</span>H</div>
+  <nav><button id="goView">Просмотр моделей</button><button id="goReviews">Отзывы</button><button id="orderNav" class="pri">Заказать фигурку</button><button class="pri" id="addBtn">+ Добавить модель</button></nav>
+</div></header>
+
+<main class="wrap">
+  <div class="hero">
+    <div>
+      <div class="tag">Личная библиотека 3D</div>
+      <h1>Ваши 3D-модели в одном месте</h1>
+      <p>Загружайте брелки, статуэтки и вазы, указывайте формат и описание, раскладывайте по категориям и просматривайте в 3D прямо в браузере.</p>
+      <button class="pri" id="addBtn2">Добавить модель</button>
+    </div>
+    <svg viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true">
+      <path d="M100 20 170 60 170 140 100 180 30 140 30 60Z"/><path d="M30 60 100 100 170 60M100 100V180"/>
+      <path d="M65 40 135 80M135 40 65 80" opacity=".4"/><circle cx="100" cy="100" r="4" fill="currentColor"/>
+    </svg>
+  </div>
+
+  <div class="cats" id="cats"></div>
+
+  <section id="view">
+    <div class="bar"><h2>Мои модели</h2><div class="tabs" id="tabs"></div></div>
+    <div class="grid" id="grid"></div>
+  </section>
+  <section id="reviews">
+    <div class="bar"><h2>Отзывы клиентов</h2></div>
+    <div class="card">
+      <div class="review-form">
+        <div><label for="reviewName">Ваше имя</label><input id="reviewName" maxlength="60" placeholder="Имя"></div>
+        <div><label for="reviewRating">Оценка</label><select id="reviewRating"><option value="5">★★★★★ — Отлично</option><option value="4">★★★★☆ — Хорошо</option><option value="3">★★★☆☆ — Нормально</option><option value="2">★★☆☆☆ — Плохо</option><option value="1">★☆☆☆☆ — Очень плохо</option></select></div>
+        <div class="wide"><label for="reviewText">Отзыв</label><textarea id="reviewText" maxlength="1500" placeholder="Поделитесь впечатлениями..."></textarea></div>
+      </div>
+      <div class="acts"><button class="pri" id="saveReview">Сохранить отзыв</button></div>
+      <p class="note" id="reviewNotice">Отзывы сохраняются в общую базу и видны на всех устройствах. После отправки форма очищается — можно писать новый отзыв.</p>
+    </div>
+    <div class="review-list" id="reviewList"></div>
+  </section>
+</main>
+<footer><div class="wrap">MESH · модели хранятся локально в вашем браузере</div></footer>
+
+<div class="modal" id="mAdd"><div class="box">
+  <h3>Новая модель</h3>
+  <label>Файл модели</label><input type="file" id="file" accept=".stl,.obj,.fbx,.glb,.gltf,.3mf,.blend,.step,.stp">
+  <label>Картинка модели (необязательно; для STL и OBJ создаётся автоматически)</label><input type="file" id="img" accept="image/*">
+  <label>Название</label><input id="name" maxlength="80" placeholder="Например: Брелок «Сова»">
+  <label>Расширение файла</label>
+  <select id="ext"><option>STL</option><option>OBJ</option><option>FBX</option><option>GLB</option><option>GLTF</option><option>3MF</option><option>BLEND</option><option>STEP</option></select>
+  <label>Описание</label><textarea id="desc" maxlength="500" placeholder="Размеры, материал, заметки по печати..."></textarea>
+  <div class="err" id="err"></div>
+  <div class="acts"><button id="cancelAdd">Отмена</button><button class="pri" id="saveBtn">Сохранить модель</button></div>
+</div></div>
+
+<div class="modal" id="mConvert"><div class="box">
+  <h3>Преобразовать модель в STL</h3>
+  <label>Категория</label><select id="convertCategory"><option value="">Выберите категорию</option><option>Брелки</option><option>Статуэтки</option><option>Вазы</option><option>Новогодние игрушки</option><option>Гаджеты</option><option>Детали</option><option>Органайзеры</option></select>
+  <label>Модель</label><select id="convertModel"><option value="">Сначала выберите категорию</option></select>
+  <p class="note">Поддерживаются модели STL, OBJ, GLB, GLTF, FBX и 3MF, если геометрия читается браузером. STEP и BLEND напрямую не конвертируются.</p>
+  <div class="err" id="convertErr"></div>
+  <div class="acts"><button id="cancelConvert">Отмена</button><button class="pri" id="runConvert">Скачать STL</button></div>
+</div></div>
+<div class="modal" id="mCat"><div class="box">
+  <h3>В какую категорию сохранить?</h3>
+  <div class="pick" id="pick"></div>
+  <div class="acts"><button id="backCat">Назад</button></div>
+</div></div>
+
+<div class="modal" id="mView"><div class="box big">
+  <h3 id="vTitle"></h3>
+  <canvas id="cv"></canvas>
+  <img id="vImg" class="vimg" alt="">
+  <p class="note" id="vNote"></p>
+  <div class="meta" id="vMeta" style="margin-top:12px"></div>
+  <p id="vDesc" class="note"></p>
+  <div class="acts"><button class="pri" id="orderViewBtn">Заказать фигурку</button><button id="convertBtn">Преобразовать в STL файл</button><button id="closeView">Закрыть</button></div>
+</div></div>
+
+
+<div class="modal" id="mOrder"><div class="box">
+  <h3>Заказать фигурку</h3>
+  <p class="note" id="orderModelInfo">Выберите модель в каталоге.</p>
+  <label for="orderCustomer">Ваше имя</label><input id="orderCustomer" maxlength="80" placeholder="Как к вам обращаться">
+  <label for="orderContact">Telegram или телефон для связи</label><input id="orderContact" maxlength="100" placeholder="@username или номер телефона">
+  <label for="orderSourceUrl">Ссылка на модель (MakerWorld / Printables, если есть)</label><input id="orderSourceUrl" maxlength="500" type="url" placeholder="https://makerworld.com/... или https://www.printables.com/...">
+  <label for="orderComment">Комментарий к заказу (необязательно)</label><textarea id="orderComment" maxlength="1000" placeholder="Размер, цвет, количество и другие пожелания"></textarea>
+  <p class="note">После заполнения откроется Telegram с готовым текстом заказа. Проверьте сообщение и отправьте его в нужный чат.</p>
+  <div class="err" id="orderErr"></div>
+  <div class="acts"><button id="cancelOrder">Отмена</button><button class="pri" id="sendOrder">Перейти в Telegram</button></div>
+</div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/libs/fflate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/FBXLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/3MFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/STLExporter.js"></script>
+<script>
+const CATS=['Брелки','Статуэтки','Вазы','Новогодние игрушки','Гаджеты','Детали','Органайзеры'];
+let models=[],filter='Все',pending=null;
+const $=id=>document.getElementById(id);
+
+/* ---------- storage: shared cloud db (synced across devices), fallback IndexedDB ---------- */
+let db=null,cdb=null,cassets=null,cloud=false,canWrite=false;
+function idb(mode,fn){return new Promise((res,rej)=>{try{const t=db.transaction('m',mode),r=fn(t.objectStore('m'));t.oncomplete=()=>res(r&&r.result);t.onerror=()=>rej(t.error)}catch(e){rej(e)}})}
+async function getBuf(m){
+  if(m.buf)return m.buf;
+  if(m.assetId){const r=await fetch('/_blob/'+m.assetId);const t=(await r.text()).trim();const bin=atob(t);const u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);m.buf=u.buffer;return m.buf}
+  return null;
+}
+async function initDB(){
+  try{if(window.claude&&claude.use){cdb=await claude.use('db');cassets=await claude.use('assets')}}catch(e){cdb=null}
+  if(cdb){
+    cloud=true;canWrite=!!cassets;
+    await new Promise(res=>{
+      const t=setTimeout(res,10000);
+      cdb.collection('models').onSnapshot(snap=>{
+        const old=new Map(models.map(m=>[m.id,m]));
+        models=snap.docs.map(d=>{const x=d.data();const prev=old.get(x.id);return Object.assign({},x,prev&&prev.buf?{buf:prev.buf}:{})});
+        clearTimeout(t);res();if(window.render&&document.getElementById('grid'))render();
+      },()=>{clearTimeout(t);res()});
+    });
+    return;
+  }
+  try{await new Promise((res,rej)=>{const r=indexedDB.open('mesh-models',1);r.onupgradeneeded=()=>r.result.createObjectStore('m',{keyPath:'id'});r.onsuccess=()=>{db=r.result;res()};r.onerror=()=>rej()});
+    models=(await idb('readonly',s=>s.getAll()))||[]}catch(e){db=null;models=[]}
+  canWrite=true;
+}
+function cloudDoc(m){const {buf,tried,...rest}=m;return rest}
+async function persist(m){
+  if(cloud){await cdb.doc('models/'+m.id).set(cloudDoc(m));return}
+  if(db){try{await idb('readwrite',s=>s.put(m))}catch(e){}}
+}
+async function unpersist(id){
+  if(cloud){
+    try{const m=models.find(x=>x.id===id);await cdb.doc('models/'+id).delete();
+      if(m&&m.assetId&&cassets){try{await cassets.delete(m.assetId)}catch(e){}}}catch(e){console.error(e)}
+    return;
+  }
+  if(db){try{await idb('readwrite',s=>s.delete(id))}catch(e){}}
+}
+
+/* ---------- UI ---------- */
+const fmt=b=>b>1048576?(b/1048576).toFixed(1)+' МБ':Math.max(1,Math.round(b/1024))+' КБ';
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function render(){
+  $('cats').innerHTML=CATS.map(c=>`<button class="cat" data-c="${c}"><span class="n">${models.filter(m=>m.cat===c).length}</span><b>${c}</b><small>Смотреть категорию</small></button>`).join('');
+  $('tabs').innerHTML=['Все',...CATS].map(c=>`<button class="${c===filter?'on':''}" data-c="${c}">${c}</button>`).join('');
+  const list=models.filter(m=>filter==='Все'||m.cat===filter).sort((a,b)=>b.id-a.id);
+  $('grid').innerHTML=list.length?list.map(m=>`<div class="card">${m.img?`<img class="thumb" data-v="${m.id}" src="${m.img}" alt="">`:`<div class="thumb" data-v="${m.id}">${m.ext}</div>`}<div class="meta"><span class="c">${m.cat}</span><span class="f">${m.ext}</span><span>${fmt(m.size)}</span></div><h3>${esc(m.name)}</h3><p>${esc(m.desc)||'Без описания'}</p><div class="row"><button class="pri" data-v="${m.id}">Смотреть</button><button data-order="${m.id}">Заказать</button><button class="danger" data-d="${m.id}">Удалить</button></div></div>`).join(''):`<div class="empty">В этой категории пока нет моделей. Нажмите «Добавить модель».</div>`;
+}
+document.addEventListener('click',e=>{
+  const t=e.target.closest('button,.thumb');if(!t)return;
+  if(t.dataset.c){filter=t.dataset.c;render();if(t.classList.contains('cat'))$('view').scrollIntoView()}
+  if(t.dataset.v)openView(+t.dataset.v);
+  if(t.dataset.order)openOrder(+t.dataset.order);
+  if(t.dataset.d&&canWrite&&confirm('Удалить модель?')){const id=+t.dataset.d;models=models.filter(m=>m.id!==id);unpersist(id);render()}
+  if(t.dataset.pick)finalSave(t.dataset.pick);
+});
+$('pick').innerHTML=CATS.map(c=>`<button data-pick="${c}">${c}</button>`).join('');
+$('goView').onclick=()=>{filter='Все';render();$('view').scrollIntoView()};
+
+/* ---------- add model ---------- */
+function openAdd(){$('file').value='';$('img').value='';$('name').value='';$('desc').value='';$('err').textContent='';pending=null;$('mAdd').classList.add('open')}
+$('addBtn').onclick=$('addBtn2').onclick=openAdd;
+$('cancelAdd').onclick=()=>$('mAdd').classList.remove('open');
+$('file').onchange=()=>{
+  const f=$('file').files[0];if(!f)return;
+  const x=f.name.split('.').pop().toUpperCase();
+  const o=[...$('ext').options].find(o=>o.value===x||(x==='STP'&&o.value==='STEP'));if(o)$('ext').value=o.value;
+  if(!$('name').value)$('name').value=f.name.replace(/\.[^.]+$/,'');
+};
+$('saveBtn').onclick=()=>{
+  const f=$('file').files[0],name=$('name').value.trim();
+  if(!f){$('err').textContent='Выберите файл модели.';return}
+  if(!name){$('err').textContent='Введите название.';return}
+  if(f.size>(cloud?14:50)*1048576){$('err').textContent='Файл больше '+(cloud?14:50)+' МБ.';return}
+  pending={file:f,img:$('img').files[0]||null,name,ext:$('ext').value,desc:$('desc').value.trim()};
+  $('mAdd').classList.remove('open');$('mCat').classList.add('open');
+};
+$('backCat').onclick=()=>{$('mCat').classList.remove('open');$('mAdd').classList.add('open')};
+async function finalSave(cat){
+  const p=pending;if(!p)return;
+  const buf=await p.file.arrayBuffer();
+  const m={id:Date.now(),name:p.name,ext:p.ext,desc:p.desc,cat,size:p.file.size,buf,img:'',auto:false};
+  try{if(p.img){m.img=await imgToURL(p.img)}else{m.img=await thumbFromBuf(p.ext,buf);m.auto=!!m.img}}catch(e){}
+  const fail=msg=>{$('mCat').classList.remove('open');$('mAdd').classList.add('open');$('err').textContent=msg};
+  if(cloud){
+    if(!cassets){fail('Добавлять модели может только владелец страницы (войдите в свой аккаунт).');return}
+    try{
+      const u=new Uint8Array(buf);let bin='';for(let i=0;i<u.length;i+=32768)bin+=String.fromCharCode.apply(null,u.subarray(i,i+32768));
+      const a=await cassets.upload(new Blob([btoa(bin)],{type:'text/plain'}));m.assetId=a.id;
+    }catch(e){fail('Не удалось загрузить файл: '+((e&&(e.message||e.code))||e));return}
+  }
+  try{await persist(m)}catch(e){fail('Не удалось сохранить: '+((e&&(e.message||e.code))||e));return}
+  if(!cloud||!models.some(x=>x.id===m.id))models.push(m);
+  pending=null;
+  $('mCat').classList.remove('open');filter=cat;render();$('view').scrollIntoView();
+}
+
+/* ---------- viewer ---------- */
+function parseSTL(buf){
+  const dv=new DataView(buf);let pos=[];
+  if(buf.byteLength>=84&&84+dv.getUint32(80,true)*50===buf.byteLength){
+    const n=dv.getUint32(80,true);
+    for(let i=0;i<n;i++){const o=84+i*50+12;for(let k=0;k<9;k++)pos.push(dv.getFloat32(o+k*4,true))}
+  }else{
+    const t=new TextDecoder().decode(buf),re=/vertex\s+(\S+)\s+(\S+)\s+(\S+)/g;let r;
+    while((r=re.exec(t)))pos.push(+r[1],+r[2],+r[3]);
+  }
+  return pos;
+}
+function parseOBJ(buf){
+  const v=[],pos=[];
+  for(const l of new TextDecoder().decode(buf).split('\n')){
+    const p=l.trim().split(/\s+/);
+    if(p[0]==='v')v.push([+p[1],+p[2],+p[3]]);
+    else if(p[0]==='f'){const ix=p.slice(1).map(s=>{let i=parseInt(s);return i<0?v.length+i:i-1});
+      for(let i=1;i<ix.length-1;i++)for(const j of [ix[0],ix[i],ix[i+1]])if(v[j])pos.push(...v[j])}
+  }
+  return pos;
+}
+function imgToURL(f){return new Promise((res,rej)=>{const u=URL.createObjectURL(f),i=new Image();i.onload=()=>{const k=Math.min(1,640/i.width),c=document.createElement('canvas');c.width=i.width*k;c.height=i.height*k;c.getContext('2d').drawImage(i,0,0,c.width,c.height);URL.revokeObjectURL(u);res(c.toDataURL('image/jpeg',.82))};i.onerror=rej;i.src=u})}
+const MAT=()=>new THREE.MeshStandardMaterial({color:0x3dd6c6,metalness:.2,roughness:.45,side:THREE.DoubleSide});
+async function loadObject(ext,buf,normalize=true){
+  let obj=null;
+  if(ext==='STL'||ext==='OBJ'){
+    const pos=ext==='STL'?parseSTL(buf):parseOBJ(buf);
+    if(pos.length<9)return null;
+    const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(pos,3));g.computeVertexNormals();
+    obj=new THREE.Mesh(g,MAT());
+  }else if(ext==='GLB'||ext==='GLTF'){
+    const data=ext==='GLTF'?new TextDecoder().decode(buf):buf;
+    obj=(await new Promise((res,rej)=>new THREE.GLTFLoader().parse(data,'',res,rej))).scene;
+  }else if(ext==='FBX'){obj=new THREE.FBXLoader().parse(buf,'')}
+  else if(ext==='3MF'){obj=new THREE.ThreeMFLoader().parse(buf)}
+  if(!obj)return null;
+  let tris=0;
+  obj.traverse(n=>{if(n.isMesh&&n.geometry){const g=n.geometry;tris+=Math.round((g.index?g.index.count:(g.attributes.position?g.attributes.position.count:0))/3)}});
+  if(!tris)return null;
+  obj.updateMatrixWorld(true);
+  const box=new THREE.Box3().setFromObject(obj);if(box.isEmpty())return null;
+  const c=box.getCenter(new THREE.Vector3()),z=box.getSize(new THREE.Vector3());
+  if(!normalize){obj.userData={tris,size:z};return obj}
+  const inner=new THREE.Group();inner.add(obj);inner.position.copy(c).negate();
+  const w=new THREE.Group();w.add(inner);w.scale.setScalar(2/Math.max(z.x,z.y,z.z||1));
+  const o=new THREE.Group();o.add(w);if(ext==='STL'||ext==='OBJ'||ext==='3MF')o.rotation.x=-Math.PI/2;
+  o.userData={tris,size:z};return o;
+}
+function mkScene(o){const sc=new THREE.Scene();sc.add(o,new THREE.AmbientLight(0xffffff,.65));const dl=new THREE.DirectionalLight(0xffffff,.9);dl.position.set(3,4,5);sc.add(dl);return sc}
+async function thumbFromBuf(ext,buf){
+  try{
+    const o=await loadObject(ext,buf);if(!o)return '';
+    const root=new THREE.Group();root.add(o);root.rotation.set(.35,.6,0);
+    const cv=document.createElement('canvas'),r=new THREE.WebGLRenderer({canvas:cv,antialias:true,preserveDrawingBuffer:true});
+    r.setSize(480,320,false);r.setClearColor(0x161b23,1);
+    const cam=new THREE.PerspectiveCamera(45,1.5,.1,100);cam.position.z=4;
+    r.render(mkScene(root),cam);const u=cv.toDataURL('image/jpeg',.85);r.dispose();return u;
+  }catch(e){return ''}
+}
+let rd=null,raf=0,viewTok=0;
+function stopView(){viewTok++;cancelAnimationFrame(raf);if(rd){rd.dispose();rd=null}}
+async function openView(id){
+  const m=models.find(x=>x.id===id);if(!m)return;
+  currentViewedModelId=id;
+  $('vTitle').textContent=m.name;$('vDesc').textContent=m.desc||'Без описания';
+  const base=`<span class="c">${m.cat}</span><span class="f">${m.ext}</span><span>${fmt(m.size)}</span>`;
+  $('vMeta').innerHTML=base;$('mView').classList.add('open');stopView();
+  const tok=viewTok,cv=$('cv'),vi=$('vImg');
+  $('vNote').textContent='Чтение геометрии…';cv.style.display='none';vi.style.display='none';
+  let o=null;try{const bf=await getBuf(m);o=bf?await loadObject(m.ext,bf):null}catch(e){o=null}
+  if(tok!==viewTok)return;
+  vi.src=m.img||'';vi.style.display=m.img&&(!o||!m.auto)?'block':'none';
+  if(!o){
+    $('vNote').textContent=['BLEND','STEP'].includes(m.ext)?'Формат '+m.ext+' нельзя прочитать в браузере. Экспортируйте модель в STL, OBJ, GLB, FBX или 3MF. Показана загруженная картинка.':'Не удалось прочитать геометрию файла.';
+    return;
+  }
+  const d=o.userData.size;
+  $('vMeta').innerHTML=base+`<span title="Треугольников">△ ${o.userData.tris.toLocaleString('ru')}</span><span title="Размеры в единицах модели">${d.x.toFixed(1)} × ${d.y.toFixed(1)} × ${d.z.toFixed(1)}</span>`;
+  $('vNote').textContent='Геометрия прочитана. Тяните мышью или пальцем, чтобы вращать. Колесо — масштаб.';
+  cv.style.display='block';
+  const root=new THREE.Group();root.add(o);const sc=mkScene(root);
+  const w=cv.clientWidth,h=380;
+  rd=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true});rd.setPixelRatio(devicePixelRatio);rd.setSize(w,h,false);
+  const cam=new THREE.PerspectiveCamera(45,w/h,.1,100);let dist=4;cam.position.z=dist;
+  let drag=false,lx=0,ly=0,auto=true;
+  cv.onpointerdown=e=>{drag=true;auto=false;lx=e.clientX;ly=e.clientY;cv.setPointerCapture(e.pointerId)};
+  cv.onpointerup=()=>drag=false;
+  cv.onpointermove=e=>{if(!drag)return;root.rotation.y+=(e.clientX-lx)*.01;root.rotation.x+=(e.clientY-ly)*.01;lx=e.clientX;ly=e.clientY};
+  cv.onwheel=e=>{e.preventDefault();dist=Math.min(10,Math.max(1.5,dist+e.deltaY*.003));cam.position.z=dist};
+  (function loop(){raf=requestAnimationFrame(loop);if(auto)root.rotation.y+=.008;rd.render(sc,cam)})();
+}
+$('closeView').onclick=()=>{$('mView').classList.remove('open');stopView()};
+document.querySelectorAll('.modal').forEach(m=>m.addEventListener('pointerdown',e=>{if(e.target===m&&m.id==='mView'){$('closeView').click()}}));
+
+async function backfill(){for(const m of models){if(m.img||m.tried)continue;m.tried=1;if(cloud&&!canWrite)continue;const bf=await getBuf(m).catch(()=>null);if(!bf)continue;const u=await thumbFromBuf(m.ext,bf);if(u){m.img=u;m.auto=true;await persist(m);render()}}}
+
+/* ---------- customer reviews (browser-local demo storage) ---------- */
+const REVIEW_KEY='mesh-customer-reviews-v1';
+let reviews=[];
+function localReviews(){try{return JSON.parse(localStorage.getItem(REVIEW_KEY)||'[]')}catch(e){return []}}
+function renderReviews(){
+  const list=reviews;
+  $('reviewList').innerHTML=list.length?list.slice().sort((a,b)=>b.date-a.date).map(r=>`<article class="review"><strong>${esc(r.name)}</strong> <span class="meta">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</span><p>${esc(r.text)}</p><small>${new Date(r.date).toLocaleString('ru-RU')}</small></article>`).join(''):'<div class="empty">Пока нет отзывов. Будьте первым!</div>';
+}
+function initReviews(){
+  reviews=localReviews();renderReviews();
+  if(!cdb)return;
+  cdb.collection('reviews').onSnapshot(snap=>{
+    const remote=snap.docs.map(d=>d.data());
+    const ids=new Set(remote.map(r=>r.rid));
+    reviews=remote.concat(reviews.filter(r=>r.pend&&!ids.has(r.rid)));
+    renderReviews();
+  },()=>{$('reviewNotice').textContent='Не удалось загрузить общие отзывы.'});
+}
+$('saveReview').onclick=async()=>{
+  const btn=$('saveReview');
+  const name=$('reviewName').value.trim(),text=$('reviewText').value.trim(),rating=+$('reviewRating').value;
+  if(!name||!text){$('reviewNotice').textContent='Заполните имя и текст отзыва.';return}
+  const r={name,text,rating,date:Date.now(),rid:Date.now().toString(36)+Math.random().toString(36).slice(2,7)};
+  /* сразу очищаем форму, чтобы можно было писать следующий отзыв */
+  $('reviewName').value='';$('reviewText').value='';$('reviewRating').value='5';
+  reviews=reviews.concat([Object.assign({pend:true},r)]);renderReviews();
+  btn.disabled=true;
+  let saved=false;
+  if(cdb){
+    try{await cdb.doc('reviews/'+r.rid).set(r);saved=true;$('reviewNotice').textContent='Отзыв сохранён. Можно написать следующий.'}
+    catch(e){console.error(e)}
+  }
+  if(!saved){
+    try{const all=localReviews();all.push(r);localStorage.setItem(REVIEW_KEY,JSON.stringify(all));$('reviewNotice').textContent=cdb?'Общая база недоступна — отзыв сохранён только в этом браузере.':'Отзыв сохранён в этом браузере. Можно написать следующий.'}
+    catch(e){$('reviewNotice').textContent='Не удалось сохранить отзыв.';$('reviewName').value=name;$('reviewText').value=text;reviews=reviews.filter(x=>x.rid!==r.rid);renderReviews()}
+  }
+  btn.disabled=false;$('reviewName').focus();
+};
+$('goReviews').onclick=()=>$('reviews').scrollIntoView({behavior:'smooth'});
+renderReviews();
+
+
+/* ---------- customer order flow ---------- */
+let orderModelId=null;
+function openOrder(id){
+  orderModelId = (id===undefined || id===null) ? null : Number(id);
+  const m=models.find(x=>x.id===orderModelId);
+  $('orderModelInfo').textContent = m
+    ? 'Модель: '+m.name+' · Категория: '+m.cat+' · Формат: '+m.ext
+    : 'Заказ без выбранной модели. Укажите пожелания в комментарии.';
+  $('orderErr').textContent='';
+  $('mOrder').classList.add('open');
+}
+$('orderNav').onclick=()=>openOrder(null);
+$('orderViewBtn').onclick=()=>openOrder(currentViewedModelId);
+$('cancelOrder').onclick=()=>$('mOrder').classList.remove('open');
+$('sendOrder').onclick=async()=>{
+  const customer=$('orderCustomer').value.trim();
+  const contact=$('orderContact').value.trim();
+  const comment=$('orderComment').value.trim();
+  const sourceUrl=$('orderSourceUrl').value.trim();
+  if(!customer||!contact){
+    $('orderErr').textContent='Укажите имя и контакт для связи.';
+    return;
+  }
+  const m=models.find(x=>x.id===orderModelId);
+  if(orderModelId!==null&&!m){
+    $('orderErr').textContent='Выбранная модель больше не найдена. Обновите каталог.';
+    return;
+  }
+  if(sourceUrl && !/^https:\/\/(www\.)?(makerworld\.com|printables\.com)\//i.test(sourceUrl)){
+    $('orderErr').textContent='Укажите ссылку с MakerWorld или Printables (https://...).';
+    return;
+  }
+  const button=$('sendOrder');
+  button.disabled=true;
+  button.textContent='Отправляем…';
+  $('orderErr').textContent='';
+  try{
+    const response=await fetch('/api/orders',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        customer,contact,comment,source_url:sourceUrl,
+        page_url:location.href,
+        model:m?{id:m.id,name:m.name,category:m.cat,format:m.ext,size:m.size}:null
+      })
+    });
+    const result=await response.json().catch(()=>({}));
+    if(!response.ok) throw new Error(result.detail||'Не удалось отправить заказ.');
+    $('orderErr').textContent='Заказ №'+result.order_id+' отправлен. Мы свяжемся с вами.';
+    $('orderCustomer').value='';
+    $('orderContact').value='';
+    $('orderComment').value='';
+    $('orderSourceUrl').value='';
+  }catch(error){
+    $('orderErr').textContent=error.message||'Ошибка соединения. Попробуйте позже.';
+  }finally{
+    button.disabled=false;
+    button.textContent='Отправить заказ';
+  }
+};
+let currentViewedModelId=null;
+
+/* ---------- model to STL conversion ---------- */
+let convertSourceId=null;
+$('convertBtn').onclick=()=>{$('mConvert').classList.add('open');$('convertErr').textContent='';$('convertCategory').value='';$('convertModel').innerHTML='<option value="">Сначала выберите категорию</option>'};
+$('cancelConvert').onclick=()=>$('mConvert').classList.remove('open');
+$('convertCategory').onchange=()=>{
+  const cat=$('convertCategory').value;
+  const found=models.filter(m=>m.cat===cat);
+  $('convertModel').innerHTML='<option value="">Выберите модель</option>'+found.map(m=>`<option value="${m.id}">${esc(m.name)} (${m.ext})</option>`).join('');
+};
+$('runConvert').onclick=async()=>{
+  const id=+$('convertModel').value,m=models.find(x=>x.id===id);
+  if(!$('convertCategory').value||!m){$('convertErr').textContent='Выберите категорию и модель.';return}
+  $('convertErr').textContent='Подготовка STL…';
+  try{
+    const bf=await getBuf(m);const obj=bf?await loadObject(m.ext,bf,false):null;
+    if(!obj)throw new Error('Не удалось прочитать геометрию этой модели.');
+    const exporter=new THREE.STLExporter();
+    const data=exporter.parse(obj,{binary:true});
+    const blob=new Blob([data],{type:'application/sla'});
+    const fname=(m.name||'model').replace(/[\\/:*?"<>|]/g,'_')+'.stl';
+    let dl=null;try{dl=window.claude&&claude.use?await claude.use('downloads'):null}catch(e){}
+    if(dl){await dl.save({filename:fname,data:blob})}
+    else{const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=fname;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500)}
+    $('convertErr').textContent='STL-файл подготовлен и скачивается.';
+  }catch(e){$('convertErr').textContent=e.message||'Ошибка преобразования.'}
+};
+
+initDB().then(()=>{render();initReviews();backfill();if(cloud&&!canWrite){document.querySelectorAll('#addBtn,#addBtn2').forEach(b=>b.style.display='none')}});
+</script>
+</body>
+</html>
